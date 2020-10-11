@@ -3,7 +3,7 @@ package com.shalini.concurrent.controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.shalini.concurrent.enums.StartProcessResponseEnums;
+import com.shalini.concurrent.enums.EndProcessStatus;
 import com.shalini.concurrent.response.ResponseObject;
 import com.shalini.concurrent.response.StartProcessResponse;
 import com.shalini.concurrent.service.ConcurrentService;
@@ -38,8 +38,8 @@ public class ConcurrentController {
 	 */
 	@ApiOperation(value = "API for ending process on shared data")
 	@GetMapping("/end-process")
-	public ResponseObject<StartProcessResponseEnums> end() {
-		return  new ResponseObject<StartProcessResponseEnums>(concurrentService.endProcess());
+	public ResponseObject<EndProcessStatus> end() {
+		return  new ResponseObject<EndProcessStatus>(concurrentService.endProcess());
 	}
 	
 }

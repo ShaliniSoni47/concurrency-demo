@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.shalini.concurrent.enums.StartProcessResponseEnums;
+import com.shalini.concurrent.enums.EndProcessStatus;
 import com.shalini.concurrent.service.ConcurrentService;
 
 @ExtendWith(SpringExtension.class)
@@ -26,13 +26,13 @@ public class ConcurrentServiceImplTest {
 	public void endProcessNoPoolTest() {
 		ExecutorService pool = (ExecutorService) ReflectionTestUtils.getField(concurrentService,"pool");	
 		pool.shutdown();
-		assertEquals(StartProcessResponseEnums.NO_PROCESS_RUNNING,concurrentService.endProcess());
+		assertEquals(EndProcessStatus.NO_PROCESS_RUNNING,concurrentService.endProcess());
 		
 	}
 
 	@Test
 	public void endProcess() {
-		assertEquals(StartProcessResponseEnums.SUCCESSFULLY_TERMINATED,concurrentService.endProcess());
+		assertEquals(EndProcessStatus.SUCCESSFULLY_TERMINATED,concurrentService.endProcess());
 	}
 	
 	@Test
