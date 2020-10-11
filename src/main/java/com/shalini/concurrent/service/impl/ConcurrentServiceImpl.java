@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import com.shalini.concurrent.dao.Shared;
 import com.shalini.concurrent.enums.ApplicationErrors;
-import com.shalini.concurrent.enums.ResponseEnums;
+import com.shalini.concurrent.enums.StartProcessResponseEnums;
 import com.shalini.concurrent.exception.custom.ApplicationException;
+import com.shalini.concurrent.response.StartProcessResponse;
 import com.shalini.concurrent.service.ConcurrentService;
-import com.shalini.concurrent.vo.ResponseValueObject;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -21,7 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ConcurrentServiceImpl implements ConcurrentService{
 	
-	ExecutorService pool = createThreadPool(1);
+	private ExecutorService pool;
+	
+	ConcurrentServiceImpl() {
+		this.pool = createThreadPool(1);
+	}
+	
 
 	private ExecutorService createThreadPool(int size) {
 		return Executors.newFixedThreadPool(size);
@@ -33,17 +38,17 @@ public class ConcurrentServiceImpl implements ConcurrentService{
 	 * @see com.shalini.concurrent.controller.ConcurrentController#end()
 	 */
 	@Override
-	public String endProcess() {
+	public StartProcessResponseEnums endProcess() {
 		
 		if(pool.isShutdown()) {
-			return ResponseEnums.NO_PROCESS_RUNNING.getMsg();
+			return StartProcessResponseEnums.NO_PROCESS_RUNNING;
 		}
 		
 		pool.shutdownNow();
 		
 		if(pool.isShutdown()){
 			log.info("Shutdown Successfull");
-			return ResponseEnums.SUCCESSFULLY_TERMINATED.getMsg();
+			return StartProcessResponseEnums.SUCCESSFULLY_TERMINATED;
 		}else{
 			throw new ApplicationException(ApplicationErrors.PROCCESSING_ERROR);
 		}
@@ -58,7 +63,7 @@ public class ConcurrentServiceImpl implements ConcurrentService{
 	 * @see com.shalini.concurrent.controller.ConcurrentController#start()
 	 */
 	@Override
-	public ResponseValueObject startProcess() {
+	public StartProcessResponse startProcess() {
 		
 		if(!pool.isTerminated()){
 		    log.info("Invalidated running process");
@@ -87,7 +92,7 @@ public class ConcurrentServiceImpl implements ConcurrentService{
 			log.error("Thread execution Rejected - "+ e.getMessage());
 		}
 		pool.shutdown();
-		return new ResponseValueObject(Shared.getCount());
+		return new StartProcessResponse(Shared.getCount());
 	}
 
 }

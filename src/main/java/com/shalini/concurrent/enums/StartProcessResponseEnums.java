@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum ResponseEnums {
+public enum StartProcessResponseEnums {
 
 	NO_PROCESS_RUNNING("No process to terminate"),
 	SUCCESSFULLY_TERMINATED("Process terminated Successfully");

@@ -1,50 +1,44 @@
 package com.shalini.concurrent.service.impl;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.util.concurrent.ExecutorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import static org.junit.jupiter.api.Assertions.*;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import com.shalini.concurrent.enums.ResponseEnums;
+import com.shalini.concurrent.enums.StartProcessResponseEnums;
 import com.shalini.concurrent.service.ConcurrentService;
-import com.shalini.concurrent.vo.ResponseValueObject;
 
 @ExtendWith(SpringExtension.class)
 public class ConcurrentServiceImplTest {
 	
-	//@Autowired
-	ConcurrentService concurrentService = new ConcurrentServiceImpl();
+	private ConcurrentService concurrentService;
 	
-	ExecutorService pool;
 	@BeforeEach
-	public void initializeThreadPool() {
-	      pool = Executors.newFixedThreadPool(1);
+	public void setup() {
+		concurrentService = new ConcurrentServiceImpl();
 	}
 	
 	@Test
 	public void endProcessNoPoolTest() {
-		shutDownPool();
-		assertEquals(ResponseEnums.NO_PROCESS_RUNNING.getMsg(),concurrentService.endProcess());
+		ExecutorService pool = (ExecutorService) ReflectionTestUtils.getField(concurrentService,"pool");	
+		pool.shutdown();
+		assertEquals(StartProcessResponseEnums.NO_PROCESS_RUNNING,concurrentService.endProcess());
 		
 	}
 
 	@Test
 	public void endProcess() {
-		assertEquals(ResponseEnums.SUCCESSFULLY_TERMINATED.getMsg(),concurrentService.endProcess());
+		assertEquals(StartProcessResponseEnums.SUCCESSFULLY_TERMINATED,concurrentService.endProcess());
 	}
 	
 	@Test
 	public void startProcess() {
-		assertEquals(5, concurrentService.startProcess().getValue());
+		assertEquals(5, concurrentService.startProcess().getCount());
 	}
 	
-	private void shutDownPool() {
-		pool.shutdown();
-	}
 	
 }
